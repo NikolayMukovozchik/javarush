@@ -8,11 +8,11 @@ import java.util.*;
  */
 public class AmigoSet<E> extends AbstractSet<E> implements Serializable, Cloneable, Set<E>{
     private static final Object PRESENT = new Object();
-    private transient HashMap map;
+    private transient HashMap<E, Object> map;
 
     @Override
-    public Iterator iterator() {
-        return this.map.keySet().iterator();
+    public Iterator<E> iterator() {
+        return map.keySet().iterator();
     }
 
     @Override
@@ -21,13 +21,13 @@ public class AmigoSet<E> extends AbstractSet<E> implements Serializable, Cloneab
     }
 
     public AmigoSet() {
-        this.map = new HashMap<E, Object>();
+        map = new HashMap<E, Object>();
     }
 
     public AmigoSet(Collection<? extends E> collection) {
-        int capacity = (int) Math.max(16, (collection.size()/.75f + 1));
-        this.map = new HashMap<>(capacity);
-        this.addAll(collection);
+        int capacity = Math.max(16, (int) (collection.size()/.75f + 1));
+        map = new HashMap<E, Object>(capacity);
+        addAll(collection);
     }
 
     public boolean add(E e){
@@ -56,14 +56,12 @@ public class AmigoSet<E> extends AbstractSet<E> implements Serializable, Cloneab
 
     @Override
     public Object clone(){
-        AmigoSet<E> amigoSet = new AmigoSet();
         try{
-            amigoSet.addAll(this);
-            amigoSet.map.putAll((Map) this.map.clone());
+            AmigoSet<E> amigoSet = (AmigoSet)super.clone();
+            amigoSet.map = (HashMap) map.clone();
+            return amigoSet;
         } catch (Exception e){
             throw new InternalError();
         }
-        return amigoSet;
-
     }
 }
